@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { SafeAreaView, Text, View, Image, TouchableOpacity, FlatList } from "react-native";
+import { SafeAreaView, Text, View, Image, TouchableOpacity, FlatList, Button } from "react-native";
 
 import images from '@/constants/images'
 import icons from '@/constants/icons'
@@ -7,6 +7,7 @@ import Search from "@/components/search";
 import { Card, FeaturedCard } from "@/components/Cards";
 import Filters from "@/components/Filters";
 import { useGlobalContext } from "@/lib/global-provider";
+import seed from "@/lib/seed";
 
 
 export default function Index() {
@@ -43,7 +44,7 @@ export default function Index() {
               <Text className="text-base font-rubik-bold text-primary-300">See all</Text>
             </TouchableOpacity>
           </View>
-          <FlatList data={[1,2, 3, 4]} renderItem={({item}) => <FeaturedCard />}
+          <FlatList data={[5, 6, 7 ]} renderItem={({item}) => <FeaturedCard />}
           keyExtractor={(item) => item.toString()}
           horizontal bounces={false}
 
