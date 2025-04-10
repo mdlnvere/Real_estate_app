@@ -7,7 +7,7 @@ import icons from '@/constants/icons'
 import images from '@/constants/images'
 import { router, useLocalSearchParams } from 'expo-router'
 import React, { useState } from 'react'
-import { View, Text, Image ,SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, Image ,SafeAreaView, TouchableOpacity, ScrollView, Alert, Modal } from 'react-native'
 
 const filterSearch = () => {
 
@@ -24,7 +24,10 @@ const filterSearch = () => {
         setSelectedCategory(category);
         router.setParams({filter: category})
     }
+
+    const [modalVisible, setModalVisible] = useState(false);
     return (
+       
         <SafeAreaView className="bg-white h-full">
             <ScrollView>
                 <View className="px-5">
