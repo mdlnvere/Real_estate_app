@@ -40,6 +40,9 @@ export default function explore() {
 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`)
 
+
+
+
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList 
@@ -63,8 +66,7 @@ export default function explore() {
                     <Image source={icons.backArrow} className='size-5' />
                 </TouchableOpacity>
                 <Text className="text-base mr-2 text-center font-rubik-medium text-balck-300">Search for your Ideal Home</Text>
-
-                <Image source={icons.bell} className="h-6 w-6"/>
+                <Image source={icons.bell} className="h-6 w-6"/>          
             </View>
             <Search />
             <View className="mt-5">

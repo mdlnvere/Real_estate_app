@@ -18,6 +18,8 @@ const Search = () => {
         debouncedSearch(text )
     }
 
+    const handleFilterPress = () => router.push('/properties/filterSearch')
+
     return (
         <View className='flex flex-row items-center justify-between w-full px-4 rounded-lg bg-accent-100 border border-primary-100 mt-5 py-2'>
             <View className='flex-1 flex flex-row items-center justify-start z-50'>
@@ -30,7 +32,7 @@ const Search = () => {
                 />
 
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() =>handleFilterPress()}>
                 <Image source={icons.filter} className="size-5"/>
             </TouchableOpacity>
         </View>
