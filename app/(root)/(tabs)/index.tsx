@@ -1,4 +1,4 @@
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { Link, Redirect, router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView, Text, View, Image, TouchableOpacity, FlatList, Button, ActivityIndicator } from "react-native";
 
 import images from '@/constants/images'
@@ -43,6 +43,7 @@ export default function Index() {
 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`)
 
+
   return (
     <SafeAreaView className="bg-white h-full">
       <FlatList 
@@ -55,7 +56,7 @@ export default function Index() {
       showsVerticalScrollIndicator={false}
       ListEmptyComponent={
         loading ? (
-          <ActivityIndicator size="large" className="text=primary-300 mt-5" />
+          <ActivityIndicator size="large" className="text-primary-300 mt-5" />
         ) : <NoResults />
       }
       ListHeaderComponent={
@@ -76,7 +77,7 @@ export default function Index() {
           <View className="flex flex-row items-center justify-between">
             <Text className="text-xl font-rubik-bold text-black-300">Featured</Text>
             <TouchableOpacity>
-              <Text className="text-base font-rubik-bold text-primary-300">See all</Text>
+              <Text className="text-base font-rubik-bold text-primary-300" >See all</Text>
             </TouchableOpacity>
           </View>
           {latestPropertiesLoading ? 
@@ -99,7 +100,7 @@ export default function Index() {
           <View className="flex flex-row items-center justify-between">
             <Text className="text-xl font-rubik-bold text-black-300">Our recommandation</Text>
             <TouchableOpacity>
-              <Text className="text-base font-rubik-bold text-primary-300">See all</Text>
+              <Text className="text-base font-rubik-bold text-primary-300" >See all</Text>
             </TouchableOpacity>
           </View>
           

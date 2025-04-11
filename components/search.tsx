@@ -1,5 +1,5 @@
 import { useLocalSearchParams, usePathname, router } from 'expo-router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView } from 'react-native'
 import { useDebouncedCallback } from "use-debounce"
 
@@ -13,20 +13,48 @@ import SliderFilter from './Slider'
 const Search = () => {
     const path = usePathname();
 
-    const params = useLocalSearchParams<{ query?: string }>();
-    const [search, setSearch] = useState(params.query); 
+    const DEFAULT_FILTERS = {
+        query: '',
+        filter: 'All',
+        rooms: '1',
+        bathrooms: '1',
+        minSurface: '40',
+        maxSurface: '3500',
+        minPrice: '0',
+        maxPrice: '8000'
+      };
 
-    const paramsFilter = useLocalSearchParams<{filter?: string}>();
-    const [selectedCategory, setSelectedCategory] = useState(paramsFilter.filter || 'All');
+    const params = useLocalSearchParams<{
+        query?: string;
+        filter?: string;
+        rooms?: string;
+        bathrooms?: string;
+        minSurface?: string;
+        maxSurface?: string;
+        minPrice?: string;
+        maxPrice?: string;
+    }>();
+    const [search, setSearch] = useState(params.query) || ''; 
+
+
+    const [selectedCategory, setSelectedCategory] = useState(params.filter || 'All');
+
+    const updateParams = (newParams: Record<string, string>) => {
+        router.setParams({
+            ...params,
+            ...newParams
+        });
+    };
+
 
     const [filters, setFilters] = useState({
         rooms: 1,
         bathrooms: 1,
         params,
-        paramsFilter,
         surfaceRange: [40, 3500] as [number, number],
         priceRange: [0, 8000] as [number, number]
       });
+
 
     const handleCategoryPress = (category: string) => {
         if(selectedCategory === category){
@@ -39,25 +67,64 @@ const Search = () => {
         router.setParams({filter: category})
     }
 
-
-
-   
-
-   
-
-
-    const debouncedSearch = useDebouncedCallback((text: string) => router.setParams({ query : text }), 500)
+    const debouncedSearch = useDebouncedCallback((text: string) => updateParams({ query : text }), 500)
 
     const handleSearch = (text: string) => {
         setSearch(text);
         debouncedSearch(text )
     }
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const handleFilterPress = () => {
-        setModalVisible(!modalVisible);
-    }
+    const handleReset = () => {
+       
+          setSearch('');
+          setSelectedCategory('All');
 
+        
+          // Réinitialisation des params
+          router.setParams({
+            query: '',
+            filter: 'All', // <-- Ajout spécifique pour la catégorie
+            rooms: '1',
+            bathrooms: '1',
+            minSurface: '40',
+            maxSurface: '3500',
+            minPrice: '0',
+            maxPrice: '8000'
+          });
+    }
+      
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleFilterPress = () => {
+        console.log(params)
+        updateParams({
+            rooms: filters.rooms.toString(),
+            bathrooms: filters.bathrooms.toString(),
+            minSurface: filters.surfaceRange[0].toString(),
+            maxSurface: filters.surfaceRange[1].toString(),
+            minPrice: filters.priceRange[0].toString(),
+            maxPrice: filters.priceRange[1].toString()
+        });
+        setModalVisible(false);
+    };
+
+    const updateFilter = <K extends keyof typeof filters>(
+        key: K, 
+        value: typeof filters[K]
+    ) => {
+        setFilters(prev => {
+            const newFilters = { ...prev, [key]: value };
+            // Mise à jour immédiate pour certains filtres
+            if (key === 'rooms' || key === 'bathrooms') {
+                router.setParams({ 
+                    ...params,
+                    [key]: value.toString() 
+                });
+            }
+            return newFilters;
+        });
+    };
         
 
     return (
@@ -88,21 +155,20 @@ const Search = () => {
                         </TouchableOpacity>
                         <Text className="text-base mr-2 text-center font-rubik-medium text-balck-300">Filter</Text>
         
-                        <TouchableOpacity>
-                            <Text className="text-base font-rubik-bold text-primary-300">Reset</Text>
+                        <TouchableOpacity onPress={()=> handleReset}>
+                            <Text className="text-base font-rubik-bold text-primary-300" 
+                            >Reset</Text>
                         </TouchableOpacity>
                     </View>
                     <View className="mt-5 flex-1">
                         <Text className="text-xl font-rubik-bold text-black-300">Price Range</Text>
-                        <View className="relative h-40 w-full mt-4"> {/* Hauteur ajustable */}
-                        {/* Image de fond */}
+                        <View className="relative h-40 w-full mt-4"> 
                         <Image 
                             source={images.barChart} 
                             className="absolute w-full top-0  bottom-0 px-2 " 
                             resizeMode='contain'
                         />
                         
-                        {/* Slider positionné en bas */}
                         <View className="absolute top-11 w-full left-1">
                             <SliderFilter
                                 label="Price Range"
@@ -111,7 +177,7 @@ const Search = () => {
                                 maxValue={10000}
                                 step={100}
                                 unit="$"
-                                onValuesChange={(range) => setFilters({...filters, priceRange: range})}
+                                onValuesChange={(range) => updateFilter('priceRange', range)}
                             />
                         </View>
                     </View>
@@ -152,7 +218,7 @@ const Search = () => {
                                 maxValue={3500}
                                 step={10}
                                 unit="sqft"
-                                onValuesChange={(range) => setFilters({...filters, surfaceRange: range})}
+                                onValuesChange={(range) => updateFilter('surfaceRange', range)}
                                  />
                             </View>
                             
@@ -165,7 +231,9 @@ const Search = () => {
             <View className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-5 mt-20">
                 <View className="flex flex-row items-center justify-between gap-10">
                     
-                    <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400"
+                    <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3
+                     rounded-full shadow-md shadow-zinc-400"
+                     onPress={()=>handleFilterPress()}
                     >
                     <Text className="text-white text-lg text-center font-rubik-bold">
                         Set Filter
@@ -175,7 +243,7 @@ const Search = () => {
             </View>
         
             </Modal>
-            <TouchableOpacity onPress={() =>handleFilterPress()}>
+            <TouchableOpacity onPress={() =>setModalVisible(true)}>
                 <Image source={icons.filter} className="size-5"/>
             </TouchableOpacity>
 
