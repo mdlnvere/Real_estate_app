@@ -6,6 +6,9 @@ import { useDebouncedCallback } from "use-debounce"
 import icons from '@/constants/icons'
 import { categories } from '@/constants/data'
 import images from '@/constants/images'
+import CounterFilter from './CounterFilter'
+import Slider from './Slider'
+import SliderFilter from './Slider'
 
 const Search = () => {
     const path = usePathname();
@@ -15,6 +18,15 @@ const Search = () => {
 
     const paramsFilter = useLocalSearchParams<{filter?: string}>();
     const [selectedCategory, setSelectedCategory] = useState(paramsFilter.filter || 'All');
+
+    const [filters, setFilters] = useState({
+        rooms: 1,
+        bathrooms: 1,
+        params,
+        paramsFilter,
+        surfaceRange: [40, 3500] as [number, number],
+        priceRange: [0, 8000] as [number, number]
+      });
 
     const handleCategoryPress = (category: string) => {
         if(selectedCategory === category){
@@ -26,6 +38,12 @@ const Search = () => {
         setSelectedCategory(category);
         router.setParams({filter: category})
     }
+
+
+
+   
+
+   
 
 
     const debouncedSearch = useDebouncedCallback((text: string) => router.setParams({ query : text }), 500)
@@ -61,8 +79,8 @@ const Search = () => {
             visible={modalVisible}
             presentationStyle='pageSheet'
             >
-                <ScrollView className=''>
-                <View className="px-5">
+                <ScrollView className='pb-20'>
+                <View className="px-10">
                     <View className="flex flex-row items-center justify-between mt-5">
                         <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}
                         className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center">
@@ -74,12 +92,32 @@ const Search = () => {
                             <Text className="text-base font-rubik-bold text-primary-300">Reset</Text>
                         </TouchableOpacity>
                     </View>
-                    <Search />
-                    <View className="mt-5">
-                    <Text className="text-xl font-rubik-bold text-black-300">Price Range</Text>
-                    <Image source={images.barChart}/>
+                    <View className="mt-5 flex-1">
+                        <Text className="text-xl font-rubik-bold text-black-300">Price Range</Text>
+                        <View className="relative h-40 w-full mt-4"> {/* Hauteur ajustable */}
+                        {/* Image de fond */}
+                        <Image 
+                            source={images.barChart} 
+                            className="absolute w-full top-0  bottom-0 px-2 " 
+                            resizeMode='contain'
+                        />
+                        
+                        {/* Slider positionné en bas */}
+                        <View className="absolute top-11 w-full left-1">
+                            <SliderFilter
+                                label="Price Range"
+                                initialValues={filters.priceRange}
+                                minValue={0}
+                                maxValue={10000}
+                                step={100}
+                                unit="$"
+                                onValuesChange={(range) => setFilters({...filters, priceRange: range})}
+                            />
+                        </View>
                     </View>
-                    <View className="mt-10">
+    
+                    </View>
+                    <View className="mt-2">
                         <Text className="text-xl font-rubik-bold text-black-300">Property Type</Text>
                             <View className='flex flex-row flex-wrap items-center mt-2 '>
                                         {categories.map((item, index) => (
@@ -91,37 +129,31 @@ const Search = () => {
                                 ))}
                             </View>
                     </View>
-                    <View className="mt-10">
+                    <View className="mt-5">
                         <Text className="text-xl font-rubik-bold text-black-300">Home Details</Text>
-                        <View className='mt-7 flex flex-row items-center justify-between'>
-                            <Text className='font-rubik-bold text-base text-gray-500 '>Bedrooms</Text>
-                            <View className='flex flex-row items-center gap-4'>
-                                <TouchableOpacity className='rounded-full' >
-                                    <Image source={icons.minus} className="size-5"  />
-                                </TouchableOpacity>
-                                <Text>1</Text>
-                                <TouchableOpacity>
-                                    <Image  source={icons.plus} className="size-5" />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View className='mt-10 flex flex-row items-center justify-between'>
-                            <Text className='font-rubik-bold text-base text-gray-500 '>Bathrooms</Text>
-                            <View className='flex flex-row items-center gap-4'>
-                                <TouchableOpacity className='rounded-full' >
-                                    <Image source={icons.minus} className="size-5"  />
-                                </TouchableOpacity>
-                                <Text>1</Text>
-                                <TouchableOpacity>
-                                    <Image  source={icons.plus} className="size-5" />
-                                </TouchableOpacity>
-                            
-                            </View>
-                        </View>
-                        <View className="mt-10 mb-20">
+                        <CounterFilter   label="Bedrooms" 
+                        initialValue={filters.rooms} 
+                        minValue={0}
+                        onChange={(rooms) => setFilters({...filters, rooms})} 
+                        />
+                        <CounterFilter   label="Bathrooms" 
+                        initialValue={filters.rooms} 
+                        minValue={1}
+                        onChange={(rooms) => setFilters({...filters, rooms})} 
+                        />
+
+                        <View className="mt-10 mb-20 pb-10">
                             <Text className="text-xl font-rubik-bold text-black-300">Building Size</Text>
                             <View>
-                                <Image className='m-10 w-80' source={images.underline} />
+                                <SliderFilter
+                                label='Surface'
+                                initialValues={filters.surfaceRange}
+                                minValue={42}
+                                maxValue={3500}
+                                step={10}
+                                unit="sqft"
+                                onValuesChange={(range) => setFilters({...filters, surfaceRange: range})}
+                                 />
                             </View>
                             
                         </View>
@@ -130,7 +162,7 @@ const Search = () => {
                     </View>
                 </View>
             </ScrollView>
-            <View className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-7 mt-15">
+            <View className="absolute bg-white bottom-0 w-full rounded-t-2xl border-t border-r border-l border-primary-200 p-5 mt-20">
                 <View className="flex flex-row items-center justify-between gap-10">
                     
                     <TouchableOpacity className="flex-1 flex flex-row items-center justify-center bg-primary-300 py-3 rounded-full shadow-md shadow-zinc-400"
