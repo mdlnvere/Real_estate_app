@@ -1,23 +1,28 @@
-import { Link, router, useLocalSearchParams } from "expo-router";
-import { SafeAreaView, Text, View, Image, TouchableOpacity, FlatList, Button, ActivityIndicator } from "react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { SafeAreaView, Text, View, Image, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
 
-import images from '@/constants/images'
 import icons from '@/constants/icons'
 import Search from "@/components/search";
-import { Card, FeaturedCard } from "@/components/Cards";
+import { Card } from "@/components/Cards";
 import Filters from "@/components/Filters";
-import { useGlobalContext } from "@/lib/global-provider";
-import seed from "@/lib/seed";
 import { useAppwrite } from "@/lib/useAppwrite";
-import { getLatestProperties, getPropoerties } from "@/lib/appwrite";
-import { useEffect } from "react";
+import { getPropoerties } from "@/lib/appwrite";
+import { useEffect, useState } from "react";
 import NoResults from "@/components/NoResults";
 
 
 export default function explore() {
 
-  const params = useLocalSearchParams<{ query?: string; filter?:string;}>();
-
+  const params = useLocalSearchParams<{ 
+    query?: string;
+    filter?: string;
+    rooms?: string;
+    bathrooms?: string;
+    minSurface?: string;
+    maxSurface?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>();
 
 
   const {data: properties, loading, refetch} = useAppwrite({
@@ -25,6 +30,12 @@ export default function explore() {
     params: {
       filter: params.filter!,
       query: params.query!,
+      room: parseInt(params.rooms!),
+      bathroom: parseInt(params.bathrooms!),
+      surfaceMin: parseInt(params.minSurface!),
+      surfaceMax: parseInt(params.maxSurface!),
+      priceMin: parseInt(params.minPrice!),
+      priceMax: parseInt(params.maxPrice!),
       limit: 20
     },
     skip: true,
@@ -34,9 +45,16 @@ export default function explore() {
     refetch({
       filter: params.filter!,
       query: params.query!,
+      room: parseInt(params.rooms!),
+      bathroom: parseInt(params.bathrooms!),
+      surfaceMin: parseInt(params.minSurface!),
+      surfaceMax: parseInt(params.maxSurface!),
+      priceMin: parseInt(params.minPrice!),
+      priceMax: parseInt(params.maxPrice!),
       limit: 20
     })
-  }, [params.filter, params.query] )
+  }, [params.filter, params.query, params.rooms , params.bathrooms,
+     params.maxPrice, params.maxSurface, params.minPrice, params.minSurface])
 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`)
 
@@ -70,7 +88,7 @@ export default function explore() {
             </View>
             <Search />
             <View className="mt-5">
-                <Filters />
+                <Filters filter={params.filter? params.filter : 'All'}  />
 
                 <Text className="text-xl font-rubik-bold text-black-300 mt-5">Found {properties?.length} Properties</Text>
             </View>

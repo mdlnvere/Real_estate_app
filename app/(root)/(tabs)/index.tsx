@@ -17,7 +17,15 @@ import NoResults from "@/components/NoResults";
 export default function Index() {
   const {user} = useGlobalContext();
 
-  const params = useLocalSearchParams<{ query?: string; filter?:string;}>();
+  const params = useLocalSearchParams<{
+    query?: string;
+    filter?: string;
+    rooms?: string;
+    bathrooms?: string;
+    minSurface?: string;
+    maxSurface?: string;
+    minPrice?: string;
+    maxPrice?: string;}>();
 
   const { data: latestProperties, loading: latestPropertiesLoading } = useAppwrite({
     fn : getLatestProperties
@@ -28,6 +36,12 @@ export default function Index() {
     params: {
       filter: params.filter!,
       query: params.query!,
+      room: parseInt(params.rooms!),
+      bathroom: parseInt(params.bathrooms!),
+      surfaceMin: parseInt(params.minSurface!),
+      surfaceMax: parseInt(params.maxSurface!),
+      priceMin: parseInt(params.minPrice!),
+      priceMax: parseInt(params.maxPrice!),
       limit: 6
     },
     skip: true,
@@ -37,6 +51,12 @@ export default function Index() {
     refetch({
       filter: params.filter!,
       query: params.query!,
+      room: parseInt(params.rooms!),
+      bathroom: parseInt(params.bathrooms!),
+      surfaceMin: parseInt(params.minSurface!),
+      surfaceMax: parseInt(params.maxSurface!),
+      priceMin: parseInt(params.minPrice!),
+      priceMax: parseInt(params.maxPrice!),
       limit: 6
     })
   }, [params.filter, params.query] )
@@ -108,7 +128,7 @@ export default function Index() {
         </View>
     
         
-        <Filters />
+        <Filters filter={params.filter? params.filter : 'All'}/>
 
 
 

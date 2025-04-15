@@ -103,11 +103,19 @@ export async function getLatestProperties() {
     }
 }
 
-export async function getPropoerties( {filter, query, limit} : { filter : string; query : string; limit?: number} ) {
+export async function getPropoerties( {filter, query, limit, room, bathroom, priceMin , priceMax, surfaceMin, surfaceMax
+} : { filter : string; query : string; limit?: number; room?: number, bathroom?: number, priceMin?:number,priceMax?:number, surfaceMin?: number, surfaceMax?: number} ) {
     try {
         const buildQuery = [Query.orderDesc('$createdAt')];
 
         if(filter && filter != 'All') buildQuery.push(Query.equal('type', filter));
+
+        if(room) buildQuery.push(Query.greaterThan('bedrooms', room -1));
+        if(bathroom) buildQuery.push(Query.greaterThan('bathrooms', bathroom -1));
+
+        if(priceMin && priceMax) buildQuery.push(Query.between('price', priceMin, priceMax));
+        if(surfaceMin && surfaceMax) buildQuery.push(Query.between('area', surfaceMin, surfaceMax));
+
         if(query){
             buildQuery.push(
                 Query.or([

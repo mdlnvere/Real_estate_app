@@ -1,13 +1,12 @@
 import { useLocalSearchParams, usePathname, router } from 'expo-router'
-import React, { useEffect, useState } from 'react'
-import { View, Text, Image, TextInput, TouchableOpacity, Modal, SafeAreaView, ScrollView, LayoutAnimation } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, Image, TextInput, TouchableOpacity, Modal, ScrollView, LayoutAnimation } from 'react-native'
 import { useDebouncedCallback } from "use-debounce"
 
 import icons from '@/constants/icons'
 import { categories } from '@/constants/data'
 import images from '@/constants/images'
 import CounterFilter from './CounterFilter'
-import Slider from './Slider'
 import SliderFilter from './Slider'
 
 const Search = () => {
@@ -30,7 +29,6 @@ const Search = () => {
 
     const updateParams = (newParams: Record<string, string>) => {
         router.setParams({
-            ...params,
             ...newParams
         });
     };
@@ -40,7 +38,7 @@ const Search = () => {
         rooms: 1,
         bathrooms: 1,
         params,
-        surfaceRange: [40, 3500] as [number, number],
+        surfaceRange: [40, 10000] as [number, number],
         priceRange: [0, 8000] as [number, number]
       });
 
@@ -67,18 +65,27 @@ const Search = () => {
 
     const handleReset = () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-            
+
             setSearch('');
             setSelectedCategory('All');
             setFilters({
             rooms: 1,
             bathrooms: 1,
             params,
-            surfaceRange: [40, 3500] ,
+            surfaceRange: [40, 10000] ,
             priceRange: [0, 8000] 
         })
             setSliderKey(prev => prev + 1);
             setCountKey(prev => prev+ 1)
+
+             updateParams({
+            rooms: '1',
+            bathrooms: '1',
+            minSurface: '40',
+            maxSurface: '10000',
+            minPrice: '0',
+            maxPrice: '8000'
+        });
 
             router.setParams({
             query: '',
@@ -86,7 +93,7 @@ const Search = () => {
             rooms: '1',
             bathrooms: '1',
             minSurface: '40',
-            maxSurface: '3500',
+            maxSurface: '10000',
             minPrice: '0',
             maxPrice: '8000'
             });
@@ -96,7 +103,6 @@ const Search = () => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleFilterPress = () => {
-        console.log(params)
         updateParams({
             rooms: filters.rooms.toString(),
             bathrooms: filters.bathrooms.toString(),
@@ -105,6 +111,8 @@ const Search = () => {
             minPrice: filters.priceRange[0].toString(),
             maxPrice: filters.priceRange[1].toString()
         });
+            router.setParams(params)
+        
         setModalVisible(false);
     };
 
@@ -114,7 +122,7 @@ const Search = () => {
     ) => {
         setFilters(prev => {
             const newFilters = { ...prev, [key]: value };
-            // Mise à jour immédiate pour certains filtres
+           
             if (key === 'rooms' || key === 'bathrooms') {
                 router.setParams({ 
                     ...params,
@@ -174,7 +182,7 @@ const Search = () => {
                                 key={`price-${sliderKey}`}
                                 initialValues={filters.priceRange}
                                 minValue={0}
-                                maxValue={10000}
+                                maxValue={8000}
                                 step={100}
                                 unit="$"
                                 onValuesChange={(range) => updateFilter('priceRange', range)}
@@ -205,9 +213,9 @@ const Search = () => {
                         />
                         <CounterFilter   label="Bathrooms"
                         key={`bathroom-${countKey}`} 
-                        initialValue={filters.rooms} 
+                        initialValue={filters.bathrooms} 
                         minValue={1}
-                        onChange={(rooms) => setFilters({...filters, rooms})} 
+                        onChange={(bathrooms) => setFilters({...filters, bathrooms})} 
                         />
 
                         <View className="mt-10 mb-20 pb-10">
@@ -218,7 +226,7 @@ const Search = () => {
                                 key={`surface-${sliderKey}`}
                                 initialValues={filters.surfaceRange}
                                 minValue={42}
-                                maxValue={3500}
+                                maxValue={10000}
                                 step={10}
                                 unit="sqft"
                                 onValuesChange={(range) => updateFilter('surfaceRange', range)}
