@@ -1,5 +1,5 @@
 import icons from '@/constants/icons';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Models } from 'react-native-appwrite';
 
@@ -11,6 +11,21 @@ interface Reviews {
 
 const Reviews = ({item} : Reviews) => {
 
+    ;
+
+    const [isLiked, setIsLiked] = useState(false);
+
+    const [likes, setLikes] = useState(() => Math.floor(Math.random() * 100) + 1);
+
+    useEffect(() => {
+        if (isLiked) {
+          setLikes(prevLikes => prevLikes + 1);
+        } else {
+          setLikes(prevLikes => Math.max(0, prevLikes - 1)); // Empêche les nombres négatifs
+        }
+      }, [isLiked]);
+
+  
     const getDaysSince = (dateString: string | Date) => {
         const creationDate = new Date(dateString);
         const utcCreation = Date.UTC(
@@ -48,12 +63,30 @@ const Reviews = ({item} : Reviews) => {
                 {item.review}
             </Text>
             <View className='flex flex-row justify-between mt-5'>
+            { isLiked == false ?
                 <View className='flex flex-row items-center'>
-                    <Image source={icons.heart} className="size-5"   tintColor={"#0061FF"} />
+                   
+                         <TouchableOpacity onPress={()=>setIsLiked(true)}>
+                         <Image source={icons.heart} className="size-5"  tintColor={"#0061FF"}  />
+                     </TouchableOpacity>
+                      
                     <Text className="text-black-300 text-sm font-rubik-medium ml-2">
-                       120
+                       {likes}
+                    </Text>
+                </View> 
+                : 
+                <View className='flex flex-row items-center'>
+
+                    <TouchableOpacity onPress={()=>{setIsLiked(false)}}>
+                    <Image source={icons.heartFull} className="size-5"    />
+                    </TouchableOpacity>
+                        
+                    <Text className="text-black-300 text-sm font-rubik-medium ml-2">
+                        {likes}
                     </Text>
                 </View>
+                  }
+
                 <Text className='text-base font-rubik-light '>
                     {daysAgo === 0 ? "Today" : ` ${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`}
                 </Text> 

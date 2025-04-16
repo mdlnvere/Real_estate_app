@@ -33,6 +33,7 @@ import location from "@/assets/icons/location.png";
 import edit from "@/assets/icons/edit.png";
 import plus from "@/assets/icons/plus.png";
 import minus from "@/assets/icons/minus.png";
+import heartFull from "@/assets/icons/fullHeart.png"
 
 export default {
   google,
@@ -69,5 +70,6 @@ export default {
   location,
   edit,
   plus,
-  minus
+  minus, 
+  heartFull
 };
