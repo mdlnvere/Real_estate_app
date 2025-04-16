@@ -1,50 +1,55 @@
-# Welcome to your Expo app 👋
+# 🏠 Real Estate Scout - Property Rental App  
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)  
+![Appwrite](https://img.shields.io/badge/Appwrite-F02E65?style=for-the-badge&logo=appwrite&logoColor=white)  
+![Figma](https://img.shields.io/badge/Design_in_Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)  
+![Google Sign-In](https://img.shields.io/badge/Google_Sign--In-4285F4?style=for-the-badge&logo=google&logoColor=white)
 
-## Get started
+A React Native mobile app for browsing and filtering real estate listings, powered by Appwrite backend.
 
-1. Install dependencies
+<div >
+  <img src="assets/screenshots/home-screen.png" width="30%" alt="Home screen" />
+  <img src="assets/screenshots/filter.png" width="30%" alt="Filter Screen" />  
+  <img src="assets/screenshots/explore.png" width="30%" alt="Explore Screen" />
+</div>
 
-   ```bash
-   npm install
-   ```
+## ✨ Key Features
 
-2. Start the app
+- 🔍 **Property search** with dynamic suggestions
+- 🎚 **Advanced filters**:
+  - Property name
+  - Bedrooms (1-5+)
+  - Bathrooms 
+  - Price range (slider)
+  - Square footage
+  - Property type (House, Apartment, etc.)
+- 🔐 **Authentication**:
+  - Google Sign-In
+- 🔄 **Appwrite integration** for data management
 
-   ```bash
-    npx expo start
-   ```
+## 🎨 Original Design
 
-In the output, you'll find options to open the app in a
+Based on Figma mockups:  
+[![Figma Design](https://img.shields.io/badge/View_Figma_Design-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/design/rpiqHBQsyE5fQudIpWHKbh/Real-Scout---Real-Estate-App?node-id=0-1&p=f&t=gfWgQvPHzU54jdLV-0)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠 Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+**Frontend**:  
+- React Native CLI  
+- React Navigation 6  
+- Context API (state management)  
+- Custom UI components  
+- Google Sign-In  
 
-## Get a fresh project
+**Backend**:  
+- Appwrite (Database, Storage, Authentication)  
+- JavaScript SDK  
 
-When you're ready, run:
+## 📈 Roadmap
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [ ] Apple Account Sign-In
+- [ ] User authentication system
+- [ ] Favorites/bookmark system
+- [ ] Enhanced image gallery
+- [ ] In-app messaging
+- [ ] Performance optimizations
