@@ -34,8 +34,15 @@ const Reviews = ({item} : Reviews) => {
                 source={{ uri: item.avatar }}
                 className=" rounded-full size-14"
               />
-             
-              <Text className="text-2xl font-rubik-bold mt-2">{item.name}</Text>
+             <View>
+                <Text className="text-2xl font-rubik-bold mt-2">{item.name}</Text>
+                <View className='flex flex-row  gap-1' >
+                    <Text >{item.rating} / 5</Text>
+                    <Image source={icons.star} className='size-4' />
+                    
+                </View>
+             </View>
+              
             </View>
             <Text>
                 {item.review}

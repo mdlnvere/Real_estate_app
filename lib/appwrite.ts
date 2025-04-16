@@ -155,3 +155,20 @@ export async function getPropertyById({id}:{id:string}) {
     }
 }
 
+export async function getReviewsByPropertyId({id}: {id: string}){
+    try {
+        const buildQuery = [Query.orderDesc('$createdAt')];
+        buildQuery.push(Query.equal('property', id))
+        
+        const result = await databases.listDocuments(
+            config.databaseId!,
+            config.reviewsCollectionId!,
+            buildQuery
+          
+        )
+        return result.documents;
+    } catch (error) {
+        console.error(error)
+        return []
+    }
+}

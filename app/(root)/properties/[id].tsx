@@ -7,8 +7,11 @@ import images from '@/constants/images';
 import { getPropertyById } from '@/lib/appwrite';
 import { useAppwrite } from '@/lib/useAppwrite';
 import { router, useLocalSearchParams } from 'expo-router'
-import React from 'react'
-import { View, Text, Dimensions, Image, Platform, TouchableOpacity, ScrollView, FlatList } from 'react-native'
+import React,{ useState }  from 'react'
+import { View, Text, Dimensions, Image, Platform, 
+    TouchableOpacity, ScrollView, FlatList , Modal} from 'react-native'
+
+import ListReviews from '../../../components/ListReviews';
 
 
 
@@ -26,6 +29,8 @@ const Property = () => {
 
      
 
+
+        const [modalVisible, setModalVisible] = useState(false);
 
     const windowHeight = Dimensions.get('window').height;
     return (
@@ -231,8 +236,18 @@ const Property = () => {
                             </Text>
                         </View>
                         <TouchableOpacity>
-                            <Text className='text-primary-300 font-rubik-bold'>See All</Text>
+                            <Text className='text-primary-300 font-rubik-bold' onPress={()=> setModalVisible(true)}>See All</Text>
+                           
                         </TouchableOpacity>
+                        <Modal
+                            animationType="slide"
+                            transparent={false}
+                            visible={modalVisible}
+                            presentationStyle='pageSheet'
+                            >
+                                <ListReviews id={property!.$id} />
+                                
+                        </Modal>
                     </View>
                     <Reviews item={property?.reviews[0]} />
                 </View>                                             

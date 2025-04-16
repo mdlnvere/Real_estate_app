@@ -58,6 +58,8 @@ export default function explore() {
 
   const handleCardPress = (id: string) => router.push(`/properties/${id}`)
 
+  
+
 
 
 
